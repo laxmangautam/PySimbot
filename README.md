@@ -1,5 +1,7 @@
 # PySimbot
 PySimbot will be used for learning AI
 
-## To install dependencies
-`pip install -r requirements.txt`
+## Requirements
+- Require Python3
+- To install dependencies run
+- `pip install -r requirements.txt`

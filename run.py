@@ -20,6 +20,9 @@ MAX_TICK = 5000
 # START POINT
 START_POINT = (400, 200)
 
+# Map file
+MAP_FILE = 'maps/default_map.kv'
+
 class MyRobot(Robot):
     def __init__(self):
         super(MyRobot, self).__init__()
@@ -53,7 +56,7 @@ class MyRobot(Robot):
             self.move(-5)
 
 if __name__ == '__main__':
-    app = PySimbotApp(MyRobot, ROBOT_NUM, mapPath='maps/default_map.kv', interval=TIME_INTERVAL, maxtick=MAX_TICK)
+    app = PySimbotApp(MyRobot, ROBOT_NUM, mapPath=MAP_FILE, interval=TIME_INTERVAL, maxtick=MAX_TICK)
     app.run()
 
 

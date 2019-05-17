@@ -48,9 +48,8 @@ class PySimbotMap(Widget):
         Logger.info('Map: End Iteration')
 
     def update(self, dt):
-        if(self.iteration > self.max_iter):
+        if self.max_iter > 0 and self.iteration >= self.max_iter:
             return
-
         self.iteration += 1
         self.before_update()
         for robot in self.robots:

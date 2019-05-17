@@ -29,6 +29,7 @@ class PySimbotMap(Widget):
     obstacles = ObjectProperty(None)
     objectives = ObjectProperty(None)
     iteration = NumericProperty(0)
+    max_iter = NumericProperty(0)
 
     def __init__(self, mapPath, **kwargs):
         super(PySimbotMap, self).__init__(**kwargs)
@@ -47,6 +48,9 @@ class PySimbotMap(Widget):
         Logger.info('Map: End Iteration')
 
     def update(self, dt):
+        if(self.iteration > self.max_iter):
+            return
+
         self.iteration += 1
         self.before_update()
         for robot in self.robots:
@@ -64,6 +68,7 @@ class PySimbotApp(App):
         self.robotCls = robotCls
         self.mapPath = mapPath
         self.interval = interval
+        self.maxtick = maxtick
         self.simbotMap = None
     
     def build(self):
@@ -74,6 +79,7 @@ class PySimbotApp(App):
 
         self.simbotMap = PySimbotMap(self.mapPath)
         self.simbotMap.robots = []
+        self.simbotMap.max_iter = self.maxtick
 
         obs = Obstacle.Obstacle()
         self.simbotMap.obstacles = obs

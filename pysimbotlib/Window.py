@@ -16,6 +16,7 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from random import randint
 from kivy.logger import Logger
+from .scaler import Scaler
 
 from . import Obstacle
 from . import Objective
@@ -53,6 +54,7 @@ class PySimbotMap(Widget):
         self.iteration += 1
         self.before_update()
         for robot in self.robots:
+            robot.before_update()
             robot.update()
         self.after_update()
 
@@ -102,4 +104,8 @@ class PySimbotApp(App):
             self.simbotMap.robots.append(r)
 
         Clock.schedule_interval(self.simbotMap.update, self.interval)
-        return self.simbotMap
+        self._scaler = Scaler(size=Window.size, scale=2)
+        Window.add_widget(self._scaler)
+        parent = self._scaler or Window
+        parent.add_widget(self.simbotMap)
+        # return self.simbotMap

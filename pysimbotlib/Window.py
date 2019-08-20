@@ -55,7 +55,6 @@ class PySimbotMap(Widget):
         self.iteration += 1
         self.before_update()
         for robot in self.robots:
-            robot.before_update()
             robot.update()
         self.after_update()
 

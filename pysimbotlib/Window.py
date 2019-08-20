@@ -8,6 +8,7 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.lang import Builder
+import platform
 from kivy.properties import NumericProperty,\
                             ReferenceListProperty,\
                             ObjectProperty
@@ -104,8 +105,11 @@ class PySimbotApp(App):
             self.simbotMap.robots.append(r)
 
         Clock.schedule_interval(self.simbotMap.update, self.interval)
-        self._scaler = Scaler(size=Window.size, scale=2)
-        Window.add_widget(self._scaler)
-        parent = self._scaler or Window
-        parent.add_widget(self.simbotMap)
-        # return self.simbotMap
+
+        if platform.system() == 'Darwin':
+            self._scaler = Scaler(size=Window.size, scale=2)
+            Window.add_widget(self._scaler)
+            parent = self._scaler or Window
+            parent.add_widget(self.simbotMap)
+        else:
+            return self.simbotMap

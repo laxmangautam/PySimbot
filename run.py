@@ -18,7 +18,7 @@ TIME_INTERVAL = 1.0/60 #10frame per second
 MAX_TICK = 5000
 
 # START POINT
-START_POINT = (400, 200)
+START_POINT = (20, 560)
 
 # Map file
 MAP_FILE = 'maps/default_map.kv'
@@ -33,12 +33,12 @@ class MyRobot(Robot):
     def update(self):
         ''' Update method which will be called each frame
         '''
-        r = random.randint(0, 3)
-        self.move(5)
-        if(r == 1):
-            self.turn(15)
-        elif(r == 2):
-            self.turn(-15)
+        # r = random.randint(0, 3)
+        # self.move(5)
+        # if(r == 1):
+        #     self.turn(15)
+        # elif(r == 2):
+        #     self.turn(-15)
         pass
     
     def _keyboard_closed(self):

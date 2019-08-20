@@ -71,7 +71,7 @@ class PySimbotApp(App):
         self.simbotMap = None
     
     def build(self):
-        Window.size = (800, 600)
+        Window.size = (700, 600)
         obmap = Builder.load_file(self.mapPath)
         robot = Builder.load_file('pysimbotlib/widget/robot.kv')
         sbmap = Builder.load_file('pysimbotlib/widget/simbotmap.kv')

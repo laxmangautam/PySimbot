@@ -107,10 +107,15 @@ class Robot(Widget):
         return -1
 
     def move(self, step: int = 1):
-        rad_angle = math.radians((360-self.direction)%360)
+        if step >= 0:
+            rad_angle = math.radians((360-self.direction)%360)
+            step = int(step)
+        else:
+            rad_angle = math.radians((540-self.direction)%360)
+            step = int(-step)
         dx = math.cos(rad_angle)
         dy = math.sin(rad_angle)
-        for i in range(int(step)):
+        for i in range(step):
             next_position = Vector(dx, dy) + self.pos
             # If can move
             if not self._isValidMove(next_position):

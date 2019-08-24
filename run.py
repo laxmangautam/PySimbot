@@ -27,8 +27,6 @@ class MyRobot(Robot):
     def __init__(self):
         super(MyRobot, self).__init__()
         self.pos = START_POINT
-        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
     def update(self):
         ''' Update method which will be called each frame
@@ -40,20 +38,6 @@ class MyRobot(Robot):
         # elif(r == 2):
         #     self.turn(-15)
         pass
-    
-    def _keyboard_closed(self):
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        self._keyboard = None
-    
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == 'w':
-            self.move(5)
-        elif keycode[1] == 'a':
-            self.turn(-5)
-        elif keycode[1] == 'd':
-            self.turn(5)
-        elif keycode[1] == 's':
-            self.move(-5)
 
 if __name__ == '__main__':
     app = PySimbotApp(MyRobot, ROBOT_NUM, mapPath=MAP_FILE, interval=TIME_INTERVAL, maxtick=MAX_TICK)

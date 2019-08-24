@@ -82,7 +82,7 @@ class Robot(Widget):
                 return deg - 360
         return -1
     
-    def turn(self, degree=1):
+    def turn(self, degree: float = 1):
         self.direction = (self.direction + degree + 360) % 360
     
     def _isValidMove(self, next_position):
@@ -106,11 +106,11 @@ class Robot(Widget):
             return i 
         return -1
 
-    def move(self, step=1):
+    def move(self, step: int = 1):
         rad_angle = math.radians((360-self.direction)%360)
         dx = math.cos(rad_angle)
         dy = math.sin(rad_angle)
-        for i in range(step):
+        for i in range(int(step)):
             next_position = Vector(dx, dy) + self.pos
             # If can move
             if not self._isValidMove(next_position):

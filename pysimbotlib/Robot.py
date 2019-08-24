@@ -86,19 +86,16 @@ class Robot(Widget):
         self.direction = (self.direction + degree + 360) % 360
     
     def _isValidMove(self, next_position):
-        # Check for outside wall
-        if (next_position[0] < self.parent.x) or (next_position[0] + self.width > self.parent.x + self.parent.width) or (next_position[1] < self.parent.y) or (next_position[1] + self.height > self.parent.y + self.parent.height):
-            return False
-        # Check obstacles
-        for obs in self._obstacles:
-            if (next_position[0] < obs.x and next_position[0] + self.width < obs.x) or\
-                (next_position[0] > obs.x + obs.width and next_position[0] + self.width > obs.x + obs.width) or\
-                (next_position[1] < obs.y and next_position[1] + self.height < obs.y) or\
-                (next_position[1] > obs.y + obs.height and next_position[1] + self.height > obs.y + obs.height):
-                continue
-            return False
+        center = Vector(self.width / 2, self.height / 2) + next_position
+        for angle in range(0, 360, 4):
+            rad_angle = math.radians((360-(self.direction+angle))%360)
+            unit_x = math.cos(rad_angle)
+            unit_y = math.sin(rad_angle)
+            surf = Vector(self.width / 2.0 * unit_x, self.height/2.0 * unit_y) + center
+            if not self._isValidPosition(surf):
+                return False
         return True
-    
+
     def _isObjective(self):
         for i, obj in enumerate(self._objectives):
             if (self.pos[0] < obj.x and self.pos[0] + self.width < obj.x) or\
@@ -111,14 +108,15 @@ class Robot(Widget):
 
     def move(self, step=1):
         rad_angle = math.radians((360-self.direction)%360)
-        new_x = step * math.cos(rad_angle)
-        new_y = step * math.sin(rad_angle)
-        next_position = Vector(new_x, new_y) + self.pos
-        # If can move
-        if self._isValidMove(next_position):
-            self.pos = Vector(new_x, new_y) + self.pos
-            obj_i = self._isObjective()
-            if(obj_i >= 0):
-                Logger.info('Robot: Eat Objective[{}]'.format(obj_i))
-            return True
-        return False
+        dx = math.cos(rad_angle)
+        dy = math.sin(rad_angle)
+        for i in range(step):
+            next_position = Vector(dx, dy) + self.pos
+            # If can move
+            if not self._isValidMove(next_position):
+                break
+            self.pos = next_position
+        
+        obj_i = self._isObjective()
+        if(obj_i >= 0):
+            Logger.info('Robot: Eat Objective[{}]'.format(obj_i))

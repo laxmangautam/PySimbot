@@ -22,6 +22,7 @@ class Robot(Widget):
     mycolor_a = NumericProperty(0)
     mycolor = ReferenceListProperty(mycolor_r, mycolor_g, mycolor_b, mycolor_a)
     _sm = ObjectProperty(None)
+    eat_count = NumericProperty(0)
 
     @property
     def _obstacles(self):
@@ -125,4 +126,5 @@ class Robot(Widget):
         obj = self._get_overlap_objective()
         if obj:
             Logger.info('Robot: Eat Objective at [{}, {}]'.format(obj.pos[0], obj.pos[1]))
-            self._sm.change_objective_pos(obj)
+            self._sm.on_robot_eat(self, obj)
+            self.eat_count += 1

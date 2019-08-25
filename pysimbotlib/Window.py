@@ -34,6 +34,7 @@ class PySimbotMap(Widget):
     objectives = ObjectProperty(None)
     iteration = NumericProperty(0)
     max_iter = NumericProperty(0)
+    eat_count = NumericProperty(0)
 
     def __init__(self, mapPath, **kwargs):
         super(PySimbotMap, self).__init__(**kwargs)
@@ -82,6 +83,10 @@ class PySimbotMap(Widget):
         elif keycode[1] == 'n':
             for obj in self.objectives.get_objectives():
                 self.change_objective_pos(obj)
+
+    def on_robot_eat(self, robot, obj):
+        self.change_objective_pos(obj)
+        self.eat_count += 1
 
     def change_objective_pos(self, obj, pos=None):
         if pos is None:

@@ -74,10 +74,10 @@
                     Rectangle:
                         pos: self.pos
                         size: self.size
-    
+
         Label:
             id: 'lbl_description'
-            text: 'Shortcuts\nw,a,s,d: move robot\nn: change food pos'
+            text: 'Shortcuts\nw,a,s,d: move robot\nn: change food pos\neat: ' + str(root.eat_count)
             text_size: self.size
             padding: (15, 10)
             halign: 'left'

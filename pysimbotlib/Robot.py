@@ -96,15 +96,15 @@ class Robot(Widget):
                 return False
         return True
 
-    def _isObjective(self):
-        for i, obj in enumerate(self._objectives):
+    def _get_overlap_objective(self):
+        for obj in self._objectives:
             if (self.pos[0] < obj.x and self.pos[0] + self.width < obj.x) or\
                 (self.pos[0] > obj.x + obj.width and self.pos[0] + self.width > obj.x + obj.width) or\
                 (self.pos[1] < obj.y and self.pos[1] + self.height < obj.y) or\
                 (self.pos[1] > obj.y + obj.height and self.pos[1] + self.height > obj.y + obj.height):
                 continue
-            return i 
-        return -1
+            return obj
+        return None
 
     def move(self, step: int = 1):
         if step >= 0:
@@ -122,6 +122,7 @@ class Robot(Widget):
                 break
             self.pos = next_position
         
-        obj_i = self._isObjective()
-        if(obj_i >= 0):
-            Logger.info('Robot: Eat Objective[{}]'.format(obj_i))
+        obj = self._get_overlap_objective()
+        if obj:
+            Logger.info('Robot: Eat Objective at [{}, {}]'.format(obj.pos[0], obj.pos[1]))
+            self._sm.change_objective_pos(obj)

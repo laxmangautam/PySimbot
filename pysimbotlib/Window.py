@@ -81,12 +81,18 @@ class PySimbotMap(Widget):
                 r.move(-5)
         elif keycode[1] == 'n':
             for obj in self.objectives.get_objectives():
-                new_pos = Vector(random.randrange(self.playground.size[0]), random.randrange(self.playground.size[1]))
-                while not self.isFoodPosValid(obj, new_pos):
-                    new_pos = Vector(random.randrange(self.playground.size[0]), random.randrange(self.playground.size[1]))
-                obj.pos = new_pos
+                self.change_objective_pos(obj)
 
-    def isFoodPosValid(self, obj, pos):
+    def change_objective_pos(self, obj, pos=None):
+        if pos is None:
+            new_pos = Vector(random.randrange(self.playground.size[0]), random.randrange(self.playground.size[1]))
+            while not self.is_obj_pos_valid(obj, new_pos):
+                new_pos = Vector(random.randrange(self.playground.size[0]), random.randrange(self.playground.size[1]))
+            obj.pos = new_pos
+        else:        
+            obj.pos = pos
+
+    def is_obj_pos_valid(self, obj, pos):
         # check wall
         if pos.x < 0 or pos.x > self.size[0] - obj.size[0]:
             return False

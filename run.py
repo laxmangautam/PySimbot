@@ -3,7 +3,7 @@
 import os, sys
 import random
 
-from pysimbotlib.Window import PySimbotApp
+from pysimbotlib.App import PySimbotApp
 from pysimbotlib.Robot import Robot
 from kivy.core.window import Window
 from kivy.logger import Logger

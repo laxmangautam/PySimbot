@@ -9,7 +9,7 @@ from kivy.properties import NumericProperty,\
                             ObjectProperty
 from kivy.vector import Vector
 from kivy.logger import Logger
-from . import Window
+from . import PySimbotMap
 
 DEFAULT_DISTANCE_ANGLE = list(range(0, 360, 45))
 

@@ -35,6 +35,8 @@ class PySimbotMap(Widget):
     iteration = NumericProperty(0)
     max_iter = NumericProperty(0)
     eat_count = NumericProperty(0)
+    food_move_count = NumericProperty(0)
+    score = NumericProperty(0)
 
     def __init__(self, mapPath, **kwargs):
         super(PySimbotMap, self).__init__(**kwargs)
@@ -83,10 +85,14 @@ class PySimbotMap(Widget):
         elif keycode[1] == 'n':
             for obj in self.objectives.get_objectives():
                 self.change_objective_pos(obj)
+                self.food_move_count += 1
+                self.score = int(self.eat_count * 100 / self.food_move_count)
 
     def on_robot_eat(self, robot, obj):
         self.change_objective_pos(obj)
         self.eat_count += 1
+        self.food_move_count += 1
+        self.score = int(self.eat_count * 100 / self.food_move_count)
 
     def change_objective_pos(self, obj, pos=None):
         if pos is None:
@@ -99,9 +105,9 @@ class PySimbotMap(Widget):
 
     def is_obj_pos_valid(self, obj, pos):
         # check wall
-        if pos.x < 0 or pos.x > self.size[0] - obj.size[0]:
+        if pos.x < 10 or pos.x > self.size[0] - 210 - obj.size[0]:
             return False
-        if pos.y < 0 or pos.y > self.size[1] - obj.size[1]:
+        if pos.y < 10 or pos.y > self.size[1] -  10 - obj.size[1]:
             return False
 
         # check obstracles

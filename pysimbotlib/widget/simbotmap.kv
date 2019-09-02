@@ -1,3 +1,5 @@
+#:kivy 1.0.9
+
 <ObstacleItem>:
     group: 'obs'
     pos: self.pos
@@ -77,7 +79,7 @@
 
         Label:
             id: 'lbl_description'
-            text: 'Shortcuts\nw,a,s,d: move robot\nn: change food pos\neat: ' + str(root.eat_count)
+            text: 'Time: '+ str(root.iteration) + '\nEat: ' + str(root.eat_count) + '\nFood Moved: ' + str(root.food_move_count) + '\nScore: ' + str(root.score) + ' %\n\n----------------------\n[Shortcuts]\nn: to change the food position'
             text_size: self.size
             padding: (15, 10)
             halign: 'left'

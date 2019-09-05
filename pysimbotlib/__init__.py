@@ -1,2 +1,1 @@
-from . import Robot
-from . import PySimbotMap
+from . import Robot, PySimbotMap, App

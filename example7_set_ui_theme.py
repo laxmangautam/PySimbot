@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 from pysimbotlib.core import PySimbotApp
-from pysimbotlib.core import 
 from kivy.logger import Logger
 
 from kivy.config import Config

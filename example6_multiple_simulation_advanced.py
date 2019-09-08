@@ -33,9 +33,23 @@ def before_sim(simbot_map: Simbot):
         r.set_color(random.random(), random.random(), random.random())
 
 def after_sim(simbot_map: Simbot):
+
+    # There are some simbot and robot calcalated statistics and property during simulation
+    # - simbot.score
+    # - simbot.simulation_count
+    # - simbot.eat_count
+    # - simbot.food_move_count
+    # - simbot.score
+    # - simbot.scoreStr
+
+    # - simbot.robot[i].eat_count
+    # - simbot.robot[i].collision_count
+    # - simbot.robot[i].color
+
     for r in simbot_map.robots:
         Logger.info("Simulation: robot pos = {0}".format(r.pos))
         Logger.info("Simulation: robot eat_count = {0}".format(r.eat_count))
+        Logger.info("Simulation: robot collision_count = {0}".format(r.collision_count))
 
     Logger.info("Simulation: End simulation. Robot[0] is at {0}".format(simbot_map.robots[0].pos))
     Logger.info("Simulation: Score = {0}".format(simbot_map.score))

@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 
-from pysimbotlib.App import PySimbotApp
-from pysimbotlib.PySimbotMap import PySimbotMap
-from pysimbotlib.Robot import Robot
+from pysimbotlib.core import PySimbotApp
+from pysimbotlib.core import 
 from kivy.logger import Logger
 
 from kivy.config import Config
@@ -13,5 +12,5 @@ import random
 
 if __name__ == '__main__':
     # possible theme value: ["default", "light", "dark"]
-    app = PySimbotApp(theme="light")
+    app = PySimbotApp(theme="light", enable_wasd_control=True)
     app.run()

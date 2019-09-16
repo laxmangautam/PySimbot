@@ -46,6 +46,7 @@ class Simbot(BoxLayout):
         self._obstacles = ObstacleWrapper()
         self._objectives = ObjectiveWrapper()
         self._robots = RobotWrapper()
+        self._robot_list = []
 
         # add robot to wrapper
         if customfn_create_robots:
@@ -63,7 +64,7 @@ class Simbot(BoxLayout):
     
     @property
     def robots(self):
-        return self._robots.get_robots()
+        return self._robot_list
 
     @property
     def obstacles(self):
@@ -74,15 +75,15 @@ class Simbot(BoxLayout):
         return self._objectives.get_objectives()
 
     def _create_robots(self):
-        robots = self.customfn_create_robots() if hasattr(self, 'customfn_create_robots') else [self.robot_cls() for _ in range(self.num_robots)]
-        for r in robots:
+        self._robot_list = self.customfn_create_robots() if hasattr(self, 'customfn_create_robots') else [self.robot_cls() for _ in range(self.num_robots)]
+        for r in self._robot_list:
             r.pos = self.robot_start_pos
             r._sm = self
             self._robots.add_widget(r)
-        return robots
 
     def _remove_all_robots_from_map(self):
         self._robots.clear_widgets()
+        self._robot_list.clear()
 
     def _reset_stats(self):
         self.eat_count = 0

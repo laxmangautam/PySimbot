@@ -8,6 +8,7 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 
 import random
+import csv
 
 from .Obstacle import ObstacleWrapper
 from .Objective import ObjectiveWrapper
@@ -39,6 +40,7 @@ class Simbot(BoxLayout):
                 customfn_after_simulation = None,
                 simulation_forever = False,
                 food_move_after_eat = True,
+                save_wasd_history = False,
                 **kwargs):
         super(Simbot, self).__init__(**kwargs)
 
@@ -61,6 +63,7 @@ class Simbot(BoxLayout):
         self._after_simulation = customfn_after_simulation if customfn_after_simulation else lambda simbot: None
         self.simulation_forever = simulation_forever
         self.food_move_after_eat = food_move_after_eat
+        self.save_wasd_history = save_wasd_history
     
     @property
     def robots(self):
@@ -94,11 +97,19 @@ class Simbot(BoxLayout):
         else:
             self.scoreStr = str(self.score)
 
+    def add_history(self, robot, turn, move):
+        distance = robot.distance()
+        angle = robot.smell()
+        if not self.history:
+            self.history.append(("ir0", "ir1", "ir2", "ir3", "ir4", "ir5", "ir6", "ir7", "angle", "turn", "move"))
+        self.history.append(list(distance) + [angle, turn, move])
+
     def process(self, dt):
         if self.iteration == 0:
             self._reset_stats()
             self._create_robots()
             self._before_simulation(self)
+            self.history = []
             self.simulation_count += 1
             Logger.debug('Map: Start Simulation')
             self.iteration += 1
@@ -112,6 +123,12 @@ class Simbot(BoxLayout):
 
             if self.iteration == self.max_tick:
                 self._after_simulation(self)
+                if self.save_wasd_history:
+                    Logger.debug("History: Saving History")
+                    with open('history{0}.csv'.format(self.simulation_count), 'w', newline='') as out_file:
+                        csv_writer = csv.writer(out_file)
+                        csv_writer.writerows(self.history if self.history else [["No history"]])
+
                 Logger.debug('Map: End Simulation: {}'.format(self.simulation_count))
                 if self.simulation_forever:
                     self._remove_all_robots_from_map()
@@ -156,11 +173,13 @@ class PySimbotMap(Widget):
     def __init__(self,
                 simbot,
                 enable_wasd_control = False,
+                save_wasd_history = False,
                 **kwargs):
         super(PySimbotMap, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
         self.enable_wasd_control = enable_wasd_control
+        self.save_wasd_history = save_wasd_history
 
         self.add_widget(simbot._obstacles)
         self.add_widget(simbot._objectives)
@@ -174,6 +193,8 @@ class PySimbotMap(Widget):
         self._keyboard = None
     
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if not self.simbot.robots:
+            return
         if self.simbot.iteration >= self.simbot.max_tick:
             return
         if keycode[1] == 'n':
@@ -182,22 +203,28 @@ class PySimbotMap(Widget):
                 self.simbot.food_move_count += 1
                 self.simbot.score = int(self.simbot.eat_count * 100 / self.simbot.food_move_count)
         elif keycode[1] == 'w' and self.enable_wasd_control:
-            for r in self.simbot.robots:
-                r.move(5)
+            r = self.simbot.robots[0]
+            self.simbot.add_history(r, 0, 5)
+            r.move(5)
         elif keycode[1] == 'a' and self.enable_wasd_control:
-            for r in self.simbot.robots:
-                r.turn(-5)
+            r = self.simbot.robots[0]
+            self.simbot.add_history(r, -5, 0)
+            r.turn(-5)
         elif keycode[1] == 'd' and self.enable_wasd_control:
-            for r in self.simbot.robots:
-                r.turn(5)
+            r = self.simbot.robots[0]
+            self.simbot.add_history(r, 5, 0)
+            r.turn(5)
         elif keycode[1] == 's' and self.enable_wasd_control:
-            for r in self.simbot.robots:
-                r.move(-5)
+            r = self.simbot.robots[0]
+            self.simbot.add_history(r, 0, -5)
+            r.move(-5)
         elif keycode[1] == 'q' and self.enable_wasd_control:
-            for r in self.simbot.robots:
-                r.turn(-5)
-                r.move(5)
+            r = self.simbot.robots[0]
+            self.simbot.add_history(r, -5, 5)
+            r.turn(-5)
+            r.move(5)
         elif keycode[1] == 'e' and self.enable_wasd_control:
-            for r in self.simbot.robots:
-                r.turn(5)
-                r.move(5)
+            r = self.simbot.robots[0]
+            self.simbot.add_history(r, 5, 5)
+            r.turn(5)
+            r.move(5)

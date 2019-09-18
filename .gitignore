@@ -106,3 +106,4 @@ venv.bak/
 
 assignment*.py
 best_*.csv
+history*.csv

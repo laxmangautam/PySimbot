@@ -36,6 +36,7 @@ class PySimbotApp(App):
                 enable_wasd_control = False,
                 simulation_forever = False,
                 food_move_after_eat = True,
+                save_wasd_history = False,
                 **kwargs):
 
         super(PySimbotApp, self).__init__(**kwargs)
@@ -59,8 +60,11 @@ class PySimbotApp(App):
                             customfn_before_simulation = customfn_before_simulation,
                             customfn_after_simulation = customfn_after_simulation,
                             simulation_forever = simulation_forever,
-                            food_move_after_eat = food_move_after_eat)
-        self.simbotMap = PySimbotMap(self.simbot, enable_wasd_control = enable_wasd_control,)
+                            food_move_after_eat = food_move_after_eat,
+                            save_wasd_history = save_wasd_history)
+        self.simbotMap = PySimbotMap(self.simbot,
+                            enable_wasd_control = enable_wasd_control,
+                            save_wasd_history = save_wasd_history)
         self.simbot.add_widget(self.simbotMap, index=1)
 
     def build(self):

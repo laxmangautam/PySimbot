@@ -44,13 +44,15 @@ class PySimbotApp(App):
         self.interval = interval
 
         Window.size = (900, 600)
+        
+        theme_file_name = "pysimbotlib/ui/%s.kv" % theme
+        if not os.path.exists(map_path):
+            raise FileNotFoundError("File [%s] is not found." % map_path)
+        if not os.path.exists(theme_file_name):
+            raise FileNotFoundError("File [%s] is not found." % theme_file_name)
+        
         Builder.load_file(map_path)
-        if theme == "default":
-            Builder.load_file('pysimbotlib/ui/default.kv')
-        elif theme == "dark":
-            Builder.load_file('pysimbotlib/ui/dark.kv')
-        elif theme == "light":
-            Builder.load_file('pysimbotlib/ui/light.kv')
+        Builder.load_file(theme_file_name)
 
         self.simbot = Simbot(max_tick=max_tick,
                             robot_cls = robot_cls, 

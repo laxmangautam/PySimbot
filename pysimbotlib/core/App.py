@@ -16,7 +16,7 @@ from .Simbot import Simbot, PySimbotMap
 from .Scaler import Scaler
 from .Robot import Robot
 
-from .config import ROBOT_START_POS, DEFAULT_MAP_PATH
+from .config import ROBOT_START_POS
 
 class PySimbotApp(App):
 
@@ -26,9 +26,9 @@ class PySimbotApp(App):
                 robot_cls = Robot,
                 num_robots = 1, 
                 robot_start_pos = ROBOT_START_POS,
-                map_path = DEFAULT_MAP_PATH, 
                 interval = 1.0/60.0,
                 max_tick = 4000,
+                map = 'default', 
                 theme = 'default',
                 customfn_create_robots = None,
                 customfn_before_simulation = None,
@@ -40,18 +40,17 @@ class PySimbotApp(App):
                 **kwargs):
 
         super(PySimbotApp, self).__init__(**kwargs)
-        Logger.info('Map Path: %s' % map_path)
         self.interval = interval
-
         Window.size = (900, 600)
-        
-        theme_file_name = "pysimbotlib/ui/%s.kv" % theme
-        if not os.path.exists(map_path):
-            raise FileNotFoundError("File [%s] is not found." % map_path)
+
+        map_file_name = "pysimbotlib/maps/%s.kv" % map
+        theme_file_name = "pysimbotlib/themes/%s.kv" % theme
+        if not os.path.exists(map_file_name):
+            raise FileNotFoundError("File [%s] is not found." % map_file_name)
         if not os.path.exists(theme_file_name):
             raise FileNotFoundError("File [%s] is not found." % theme_file_name)
         
-        Builder.load_file(map_path)
+        Builder.load_file(map_file_name)
         Builder.load_file(theme_file_name)
 
         self.simbot = Simbot(max_tick=max_tick,
@@ -64,9 +63,11 @@ class PySimbotApp(App):
                             simulation_forever = simulation_forever,
                             food_move_after_eat = food_move_after_eat,
                             save_wasd_history = save_wasd_history)
+
         self.simbotMap = PySimbotMap(self.simbot,
                             enable_wasd_control = enable_wasd_control,
                             save_wasd_history = save_wasd_history)
+
         self.simbot.add_widget(self.simbotMap, index=1)
 
     def build(self):

@@ -11,7 +11,7 @@ import random
 import csv
 
 from .Obstacle import ObstacleWrapper
-from .Objective import ObjectiveWrapper
+from .Objective import ObjectiveWrapper, Objective
 from .Robot import RobotWrapper
 from .config import SIMBOTMAP_SIZE
 
@@ -34,13 +34,16 @@ class Simbot(BoxLayout):
     def __init__(self, 
                 robot_cls, 
                 num_robots, 
-                robot_start_pos,
+                num_objectives,
+                robot_default_start_pos,
+                obj_default_start_pos,
                 customfn_create_robots = None, 
                 customfn_before_simulation = None,
                 customfn_after_simulation = None,
                 simulation_forever = False,
                 food_move_after_eat = True,
                 save_wasd_history = False,
+                robot_see_each_other = False,
                 **kwargs):
         super(Simbot, self).__init__(**kwargs)
 
@@ -48,15 +51,20 @@ class Simbot(BoxLayout):
         self._obstacles = ObstacleWrapper()
         self._objectives = ObjectiveWrapper()
         self._robots = RobotWrapper()
+        self._objective_list = []
         self._robot_list = []
 
-        # add robot to wrapper
+        # initialize robot creator function/params
         if customfn_create_robots:
             self.customfn_create_robots = customfn_create_robots
         else:
             self.robot_cls = robot_cls
             self.num_robots = num_robots    
-        self.robot_start_pos = robot_start_pos
+        self.robot_default_start_pos = robot_default_start_pos
+
+        # initialize food creator params
+        self.num_objectives = num_objectives
+        self.obj_default_start_pos = obj_default_start_pos
 
         # intialize simulation parameters
         self._before_simulation = customfn_before_simulation if customfn_before_simulation else lambda simbot: None
@@ -64,6 +72,7 @@ class Simbot(BoxLayout):
         self.simulation_forever = simulation_forever
         self.food_move_after_eat = food_move_after_eat
         self.save_wasd_history = save_wasd_history
+        self.robot_see_each_other = robot_see_each_other
     
     @property
     def robots(self):
@@ -80,13 +89,36 @@ class Simbot(BoxLayout):
     def _create_robots(self):
         self._robot_list = self.customfn_create_robots() if hasattr(self, 'customfn_create_robots') else [self.robot_cls() for _ in range(self.num_robots)]
         for r in self._robot_list:
-            r.pos = self.robot_start_pos
+            r.pos = self.robot_default_start_pos
+            trial_count = 0
+            while not self.is_robot_pos_valid(r):
+                r.pos = (random.randrange(SIMBOTMAP_SIZE[0] - r.size[0]), random.randrange(SIMBOTMAP_SIZE[1] - r.size[1]))
+                r._direction = random.randrange(360)
+                trial_count += 1
+                if trial_count == 500:
+                    raise Exception("Can't find the place for spawning robots")
             r._sm = self
             self._robots.add_widget(r)
+
+    def _create_objectives(self):
+        self._objective_list = [Objective() for _ in range(self.num_objectives)]
+        for obj in self._objective_list:
+            obj.pos = self.obj_default_start_pos
+            trial_count = 0
+            while not self.is_objective_pos_valid(obj):
+                obj.pos = (random.randrange(SIMBOTMAP_SIZE[0] - obj.size[0]), random.randrange(SIMBOTMAP_SIZE[1] - obj.size[1]))
+                trial_count += 1
+                if trial_count == 500:
+                    raise Exception("Can't find the place for spawning objective")
+            self._objectives.add_widget(obj)
 
     def _remove_all_robots_from_map(self):
         self._robots.clear_widgets()
         self._robot_list.clear()
+
+    def _remove_all_objectives_from_map(self):
+        self._objectives.clear_widgets()
+        self._objective_list.clear()
 
     def _reset_stats(self):
         self.eat_count = 0
@@ -107,6 +139,7 @@ class Simbot(BoxLayout):
     def process(self, dt):
         if self.iteration == 0:
             self._reset_stats()
+            self._create_objectives()
             self._create_robots()
             self._before_simulation(self)
             self.history = []
@@ -132,6 +165,7 @@ class Simbot(BoxLayout):
                 Logger.debug('Map: End Simulation: {}'.format(self.simulation_count))
                 if self.simulation_forever:
                     self._remove_all_robots_from_map()
+                    self._remove_all_objectives_from_map()
                     self.iteration = 0
     
     def on_robot_eat(self, robot, obj):
@@ -149,24 +183,66 @@ class Simbot(BoxLayout):
         if pos:
             obj.pos = pos
         else:
-            new_pos = (random.randrange(SIMBOTMAP_SIZE[0]), random.randrange(SIMBOTMAP_SIZE[1]))
-            while not self.is_objective_pos_valid(obj, new_pos):
-                new_pos = (random.randrange(SIMBOTMAP_SIZE[0]), random.randrange(SIMBOTMAP_SIZE[1]))
-            obj.pos = new_pos
-            
+            obj.pos = (random.randrange(SIMBOTMAP_SIZE[0]-obj.size[0]), random.randrange(SIMBOTMAP_SIZE[1]-obj.size[1]))
+            trial_count = 0
+            while not self.is_objective_pos_valid(obj):
+                obj.pos = (random.randrange(SIMBOTMAP_SIZE[0]-obj.size[0]), random.randrange(SIMBOTMAP_SIZE[1]-obj.size[1]))
+                trial_count += 1
+                if trial_count == 500:
+                    raise Exception("Can't find the place for spawning food")
 
-    def is_objective_pos_valid(self, obj, pos):
+    def is_objective_pos_valid(self, obj):
+        pos = obj.pos
         # check wall
-        if pos[0] < 0 or pos[0] > SIMBOTMAP_SIZE[0] - obj.size[0]:
+        if pos[0] <= 0 or pos[0] >= SIMBOTMAP_SIZE[0] - obj.size[0]:
             return False
-        if pos[1] < 0 or pos[1] > SIMBOTMAP_SIZE[1] - obj.size[1]:
+        if pos[1] <= 0 or pos[1] >= SIMBOTMAP_SIZE[1] - obj.size[1]:
+            return False
+
+        # check obstacles
+        for obs in self.obstacles:
+            if (obs.pos[0] <= pos[0] <= obs.pos[0] + obs.size[0] or obs.pos[0] <= pos[0] + obj.size[0] <= obs.pos[0] + obs.size[0])\
+                and (obs.pos[1] <= pos[1] <= obs.pos[1] + obs.size[1] or obs.pos[1] <= pos[1] + obj.size[1] <= obs.pos[1] + obs.size[1]):
+                return False
+
+        # check robots
+        for r in self._robot_list:
+            if (r.pos[0] <= pos[0] <= r.pos[0] + r.size[0] or r.pos[0] <= pos[0] + obj.size[0] <= r.pos[0] + r.size[0])\
+                and (r.pos[1] <= pos[1] <= r.pos[1] + r.size[1] or r.pos[1] <= pos[1] + obj.size[1] <= r.pos[1] + r.size[1]):
+                return False
+
+        # check other objectives
+        for o in self._objective_list:
+            if obj == o:
+                continue
+            if (o.pos[0] <= pos[0] <= o.pos[0] + o.size[0] or o.pos[0] <= pos[0] + obj.size[0] <= o.pos[0] + o.size[0])\
+                and (o.pos[1] <= pos[1] <= o.pos[1] + o.size[1] or o.pos[1] <= pos[1] + obj.size[1] <= o.pos[1] + o.size[1]):
+                return False
+
+        return True
+
+    def is_robot_pos_valid(self, robot):
+        pos = robot.pos
+        if pos[0] <= 0 or pos[0] >= SIMBOTMAP_SIZE[0] - robot.size[0]:
+            return False
+        if pos[1] <= 0 or pos[1] >= SIMBOTMAP_SIZE[1] - robot.size[1]:
             return False
 
         # check obstracles
         for obs in self.obstacles:
-            if (obs.pos[0] < pos[0] < obs.pos[0] + obs.size[0] or obs.pos[0] < pos[0] + obj.size[0] < obs.pos[0] + obs.size[0])\
-                and (obs.pos[1] < pos[1] < obs.pos[1] + obs.size[1] or obs.pos[1] < pos[1] + obj.size[1] < obs.pos[1] + obs.size[1]):
+            if (obs.pos[0] <= pos[0] <= obs.pos[0] + obs.size[0] or obs.pos[0] <= pos[0] + robot.size[0] <= obs.pos[0] + obs.size[0])\
+                and (obs.pos[1] <= pos[1] <= obs.pos[1] + obs.size[1] or obs.pos[1] <= pos[1] + robot.size[1] <= obs.pos[1] + obs.size[1]):
                 return False
+
+        # check other robots
+        if self.robot_see_each_other:
+            for r in self._robot_list:
+                if robot == r:
+                    continue
+                if (r.pos[0] <= pos[0] <= r.pos[0] + r.size[0] or r.pos[0] <= pos[0] + robot.size[0] <= r.pos[0] + r.size[0])\
+                    and (r.pos[1] <= pos[1] <= r.pos[1] + r.size[1] or r.pos[1] <= pos[1] + robot.size[1] <= r.pos[1] + r.size[1]):
+                    return False
+        
         return True
 
 class PySimbotMap(Widget):

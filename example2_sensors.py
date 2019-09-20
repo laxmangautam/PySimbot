@@ -15,7 +15,6 @@ class MyRobot(Robot):
     def update(self):
         Logger.info("Smell Angle: {0}".format(self.smell()))
         Logger.info("Distance: {0}".format(self.distance()))
-        pass
 
 if __name__ == '__main__':
     app = PySimbotApp(robot_cls=MyRobot, num_robots=1, interval=REFRESH_INTERVAL, enable_wasd_control=True)

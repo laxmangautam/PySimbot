@@ -30,6 +30,7 @@ class Robot(Widget):
     eat_count: int = 0
     collision_count: int = 0
     just_eat: bool = False
+    stuck: bool = False
     
     def _isValidPosition(self, p: Util.Point2D, obstacles_included=None) -> bool:
         if obstacles_included is None:
@@ -174,6 +175,7 @@ class Robot(Widget):
 
     def turn(self, degree: float = 1) -> None:
         self._direction = (self._direction + degree) % 360
+        self.stuck = False
 
     def move(self, step: int = 1) -> None:
         rad_angle = math.radians((-self._direction) % 360)
@@ -185,11 +187,14 @@ class Robot(Widget):
         dx = math.cos(rad_angle)
         dy = math.sin(rad_angle)
 
+        self.stuck = False
         next_position = self.pos
-        for _ in range(0, step, 1):
+        for distance in range(0, step, 1):
             next_possible_position = (next_position[0] + dx, next_position[1] + dy)
             # If can move
             if not self._isValidMove(next_possible_position):
+                if distance == 0:
+                    self.stuck = True
                 self.collision_count += 1
                 break
             next_position = next_possible_position

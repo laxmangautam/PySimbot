@@ -119,6 +119,26 @@ class Robot(Widget):
         # return ROBOT_MAX_SENSOR_DISTANCE
 
     def _isValidMove(self, next_position: Util.Point2D) -> bool:
+
+        # for line in Util.all_bounding_lines_generator(self._sm.obstacles):
+        #     point1, _ = Util.line_segment_circle_intersect(line[0], line[1], self.pos, self.width / 2)
+        #     if point1 is not None:
+        #         return False
+        # # Check obstacles
+        # for obs in self._sm.obstacles:
+        #     if p[0] <= obs.x or p[0] >= obs.x + obs.width or p[1] <= obs.y or p[1] >= obs.y + obs.height:
+        #         continue
+        #     return False
+
+        # # Check robots
+        # if self._sm.robot_see_each_other:
+        #     for r in self._sm._robot_list:
+        #         if r == self:
+        #             continue
+        #         if Util.distance(r.center, p) <= 0.5 * self.size[0]:
+        #             return False
+        # return True
+
         for angle in range(0, 360, 40):
             rad_angle = math.radians(-(self._direction+angle) % 360)
             unit_x = math.cos(rad_angle)

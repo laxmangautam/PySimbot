@@ -5,9 +5,9 @@ PySimbot is a software for simple robot simulation
 ## Installation
 
 - Require Python3 and pip [Python](https://www.python.org/downloads/)
-- For Windows, install dependencies by run `pip install -r requirements_windows.txt`
-- For MacOS, install dependencies by run `pip3 install -r requirements_macos.txt`
-- For Linux, install dependencies by run `pip3 install -r requirements_linux.txt`
+- For Windows, install dependencies by run `pip install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_windows.txt`
+- For MacOS, install dependencies by run `pip3 install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_macos.txt`
+- For Linux, install dependencies by run `pip3 install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_linux.txt`
 
 ## Getting Started
 

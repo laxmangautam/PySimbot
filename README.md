@@ -38,15 +38,15 @@ pysimbotlib.core.PySimbotApp
 | just_eat        | bool              | flag that would be True if the robot ate food in the last iteration |
 | stuck           | bool              | flag that would be True when the robot is stuck to the wall         |
 
-|     Method    |            Arguments           | Return Type |                                    Description                                             |
-|:-------------:|:------------------------------:|-------------|:------------------------------------------------------------------------------------------:|
-| update        | None                           | None        | update the robot state for each simbot's iteration                                         |
-| set_color     | r, g, b, a                     | None        | set the robot color in RGBA. The values are between 0 to 1. (a is optional, default to 1)  |
-| turn          | degree: float                  | None        | turn the robot by the specifying degree                                                    |
-| move          | step: int                      | None        | move the robot forward by the specified step. The robot will not move if collide.          |
-| distance      | None                           | List[float] | get the 8 sensor distances in pixels from the sensors around the robot side                |
-| smell         | index: int                     | float       | get the turning angle to the food with the given index. (index is optional, default to 0)  |
-| smell_nearest | None                           | float       | get the turning angle to the nearest food                                                  |
+|     Method                            | Return Type |                                    Description                                                      |
+|:-------------------------------------:|-------------|:---------------------------------------------------------------------------------------------------:|
+| update()                              | None        | update the robot state for each simbot's iteration                                                  |
+| set_color(r:, g, b, a)                | None        | set the robot color in RGBA. The values are between 0 to 1. (a is optional, default to 1)           |
+| turn(degree)                          | None        | turn the robot by the specifying degree (floating point number)                                     |
+| move(step)                            | None        | move the robot forward by the specified step (integer number). The robot will not move if collides. |
+| distance()                            | List[float] | get the 8 sensor distances in pixels from the sensors around the robot side                         |
+| smell(index)                          | float       | get the turning angle to the food corresponding to the food index. (index is optional, default to 0)|
+| smell_nearest()                       | float       | get the turning angle to the nearest food                                                           |
 
 - Override the update() method to implement the robot's logic.
 - Pass your robot's class as the parameter to the PySimbotApp to make a simulation.

@@ -7,9 +7,9 @@ PySimbot is a software for simple robot simulation
 - Install Python3 (The supported version currently are [3.6-3.9](https://www.python.org/downloads/))
 - If needed, you can use [virtualenv](https://virtualenv.pypa.io/en/latest/) before installing the libraries.
 - To install the libraries, use the program such as cmd, powershell, or terminal. The command will be based on your OS.
-- for Windows, `pip install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_windows.txt`
+- for Windows, `pip install -r requirements_windows.txt`
 
-- for macOS, `pip3 install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_macos.txt`
+- for macOS, `pip3 install -r requirements_macos.txt`
 
 - for Linux, `pip3 install -r requirements_linux.txt`
 

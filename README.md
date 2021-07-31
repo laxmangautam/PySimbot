@@ -4,42 +4,49 @@ PySimbot is a software for simple robot simulation
 
 ## Installation
 
-- Require Python3 and pip [Python](https://www.python.org/downloads/)
-- For Windows, install dependencies by run `pip install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_windows.txt`
-- For MacOS, install dependencies by run `pip3 install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_macos.txt`
-- For Linux, install dependencies by run `pip3 install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_linux.txt`
+- Install Python3 (The supported version currently are [3.6-3.9](https://www.python.org/downloads/))
+- If needed, you can use [virtualenv](https://virtualenv.pypa.io/en/latest/) before installing the libraries.
+- To install the libraries, use the program such as cmd, powershell, or terminal. The command will be based on your OS.
+- for Windows, `pip install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_windows.txt`
+
+- for macOS, `pip3 install --pre --extra-index-url https://kivy.org/downloads/simple/ -r requirements_macos.txt`
+
+- for Linux, `pip3 install -r requirements_linux.txt`
 
 ## Getting Started
 
-- Running an example by `python example<i>_<example-name>.py` to understand the basic coding structure.
-- The root class is PySimbotApp. The instance contains objects from the other classes by the following structure.
+- Running an example file to understand how PySimbot works. `python example1_wasd_robot.py`
+- While running the example, you can see the messages in the command window. It will describe the simulation.
+- The coding of the simulation is wrapped in PySimbotApp. The instance contains objects from the other classes by the following structure.
+
 ```lang-none
-PySimbotApp
+pysimbotlib.core.PySimbotApp
 ㄴSimbot
   ㄴSimbotMap
     ㄴRobot
     ㄴObstacle
     ㄴObjective
 ```
-- Create your own robot class by extends the pysimbotlib.core.Robot class. The robot class contains following properties and methods.
+
+- You can create your own Robot code by extends the pysimbotlib.core.Robot class. The robot class contains following properties and methods.
 
 |     Property    |        Type       |                             Description                             |
 |:---------------:|:-----------------:|:-------------------------------------------------------------------:|
-| color           | Tuple(r, g, b, a) | color of the robot                                                  |
-| eat_count       | int               | number of foods eaten                                               |
-| collision_count | int               | number of collisions made by this robot                             |
+| color           | Tuple[r, g, b, a] | color of the robot                                                  |
+| eat_count       | int               | number of foods that robot has eaten                                |
+| collision_count | int               | number of collisions that the robot made                            |
 | just_eat        | bool              | flag that would be True if the robot ate food in the last iteration |
 | stuck           | bool              | flag that would be True when the robot is stuck to the wall         |
 
-|     Method    |            Arguments           | Return Type |                                    Description                                   |
-|:-------------:|:------------------------------:|-------------|:--------------------------------------------------------------------------------:|
-| set_color     | r, g, b, a: float              | None        | set the robot color (r, g, b, a is between 0 to 1) (a is 1 if not specified)     |
-| distance      | -                              | List[float] | get the 8 sensor distances in pixels from the sensors around the robot side      |
-| smell         | index: int (Optional variable) | float       | get the distance to the food with the given index. (index is 0 if not specified) |
-| smell_nearest | -                              | float       | get the distance to the nearest food                                             |
-| turn          | degree: float                  | None        | turn the robot by the specifying degree                                          |
-| move          | step: int                      | None        | move the robot forward by the specified step. The robot will not move if collide.|
-| update        | None                           | None        | update the robot state for each simbot's iteration                               |
+|     Method    |            Arguments           | Return Type |                                    Description                                             |
+|:-------------:|:------------------------------:|-------------|:------------------------------------------------------------------------------------------:|
+| update        | None                           | None        | update the robot state for each simbot's iteration                                         |
+| set_color     | r, g, b, a                     | None        | set the robot color in RGBA. The values are between 0 to 1. (a is optional, default to 1)  |
+| turn          | degree: float                  | None        | turn the robot by the specifying degree                                                    |
+| move          | step: int                      | None        | move the robot forward by the specified step. The robot will not move if collide.          |
+| distance      | None                           | List[float] | get the 8 sensor distances in pixels from the sensors around the robot side                |
+| smell         | index: int                     | float       | get the turning angle to the food with the given index. (index is optional, default to 0)  |
+| smell_nearest | None                           | float       | get the turning angle to the nearest food                                                  |
 
 - Override the update() method to implement the robot's logic.
 - Pass your robot's class as the parameter to the PySimbotApp to make a simulation.
@@ -48,8 +55,8 @@ PySimbotApp
 
 You can configure the PySimbotApp in several ways by passing the parameters to the PySimbotApp's constructor.
 
-- robot_cls: the robot class
-- num_robots: the number of robots 
+- robot_cls: the robot class for initialing all robots in the simulation
+- num_robots: the number of robots
 - num_objectives: the number of foods
 - robot_default_start_pos: the start position of the robot in (x, y) tuple format
 - obj_default_start_pos: the start position of the food in (x, y) tuple format

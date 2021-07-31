@@ -7,7 +7,8 @@ if platform.system() == "Linux" or platform.system() == "Darwin":
 from pysimbotlib.core import PySimbotApp
 from kivy.config import Config
 
-# Force the program to show user's log only for "debug" level or more. The info log will be disabled.
+# One of ['trace', 'debug', 'info', 'warning', 'error', 'critical']
+# Force the program to show user's log only for "debug" level or more.
 Config.set('kivy', 'log_level', 'debug')
 
 if __name__ == '__main__':

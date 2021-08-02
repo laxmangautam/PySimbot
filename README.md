@@ -34,6 +34,7 @@ In simulation, two kinds of sensors are defined.
 - **8 distance sensors** measure the distance from the edge of the robot to the obstacle and wall. The sensor are located around the robots in 8 directions (+45 degrees for every sensor starting from the robot front edge). These sensors has operational length of 100 pixels. If there is no obstacle and wall in the operation range, the sensors will return 100.
 
 - **1 smell sensor** measures the angle in degree (-180 to 180) from the robot center position to the specified food. If the food is on the left of robot the angle will be negative. If the food is on the right of the robot the angle will be positive.
+
 See more in [Example2](/example2_sensors.py)
 
 ### Robot movements
@@ -55,6 +56,7 @@ By passing your own class as a parameter of PySimbotApp constructor, the simulat
 ```
 app = PySimbotApp(robot_cls=CircularRobot)
 ```
+
 See more in [Example3](/example3_randomwalk_robot.py)
 
 ### Robot Class

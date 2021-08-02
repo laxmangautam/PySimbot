@@ -24,6 +24,8 @@ python example3_randomwalk_robot.py
 - The coding logic of the simulation is wrapped in the library. You mostly do nothing on handling the UI and Physics of the simulation.
 - Keep focusing on the robot logic.
 
+> See more in [Example1](/example1_wasd_robot.py)
+
 ## Robot
 `pysimbotlib.core.Robot` defines the basic functions of the robot. 
 We can control the robot programmatically and see how it moves on the map.
@@ -35,7 +37,7 @@ In simulation, two kinds of sensors are defined.
 
 - **1 smell sensor** measures the angle in degree (-180 to 180) from the robot center position to the specified food. If the food is on the left of robot the angle will be negative. If the food is on the right of the robot the angle will be positive.
 
-See more in [Example2](/example2_sensors.py)
+> See more in [Example2](/example2_sensors.py)
 
 ### Robot movements
 To move the robot, two operations are allowed.
@@ -57,7 +59,7 @@ By passing your own class as a parameter of PySimbotApp constructor, the simulat
 app = PySimbotApp(robot_cls=CircularRobot)
 ```
 
-See more in [Example3](/example3_randomwalk_robot.py)
+> See more in [Example3](/example3_randomwalk_robot.py)
 
 ### Robot Class
 The robot class contains following properties and methods.

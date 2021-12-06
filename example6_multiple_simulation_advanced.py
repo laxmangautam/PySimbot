@@ -62,7 +62,7 @@ def after_sim(simbot_map: Simbot):
 if __name__ == '__main__':
     app = PySimbotApp(robot_cls=RandomWalkRobot,
                         num_robots=30,
-                        max_tick=500,
+                        max_tick=5000,
                         interval=1/1000.0,
                         simulation_forever=True,
                         customfn_before_simulation=before_sim,
